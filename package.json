@@ -1,0 +1,566 @@
+{
+  "name": "vs-workflow-extension",
+  "displayName": "Workflow",
+  "description": "Worktree and Clier pipeline management sidebar",
+  "version": "0.1.0",
+  "publisher": "workflow",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "submenus": [
+      {
+        "id": "workflow.clier.daemon.logs.submenu",
+        "label": "View Logs"
+      },
+      {
+        "id": "workflow.clier.process.logs.submenu",
+        "label": "View Logs"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "workflow",
+          "title": "Workflow",
+          "icon": "resources/icons/workflow.svg"
+        }
+      ]
+    },
+    "views": {
+      "workflow": [
+        {
+          "id": "workflowWorktrees",
+          "name": "Worktrees",
+          "when": "workflowGwtInstalled || workflowForceShowWorktrees"
+        },
+        {
+          "id": "workflowClier",
+          "name": "Pipeline",
+          "when": "workflowClierInstalled || workflowForceShowClier"
+        },
+        {
+          "id": "workflowTools",
+          "name": "Tools"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "workflow.worktrees.refresh",
+        "title": "Refresh Worktrees",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "workflow.worktrees.create",
+        "title": "Create Worktree",
+        "icon": "$(add)"
+      },
+      {
+        "command": "workflow.worktrees.merge",
+        "title": "Merge Worktree",
+        "icon": "$(git-merge)"
+      },
+      {
+        "command": "workflow.worktrees.rescue",
+        "title": "Rescue Worktree",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "workflow.worktrees.delete",
+        "title": "Delete Worktree",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "workflow.worktrees.openWindow",
+        "title": "Open in New Window",
+        "icon": "$(multiple-windows)"
+      },
+      {
+        "command": "workflow.worktrees.claudeSession",
+        "title": "Claude Session",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "workflow.worktrees.gwtSession",
+        "title": "New GWT Agent Session",
+        "icon": "$(play)"
+      },
+      {
+        "command": "workflow.worktrees.gwtSessionInteractive",
+        "title": "New GWT Interactive Session (No Prompt)",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "workflow.worktrees.gwtSplit",
+        "title": "Split Task into Agent Sessions",
+        "icon": "$(split-horizontal)"
+      },
+      {
+        "command": "workflow.worktrees.gwtSplitFromEditor",
+        "title": "Split Task from Editor",
+        "icon": "$(file-text)"
+      },
+      {
+        "command": "workflow.worktrees.mergeSelected",
+        "title": "Batch Merge Worktrees",
+        "icon": "$(git-merge)"
+      },
+      {
+        "command": "workflow.worktrees.deleteSelected",
+        "title": "Batch Delete Worktrees",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "workflow.worktrees.diff",
+        "title": "View Diff",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "workflow.worktrees.docs",
+        "title": "GWT Documentation",
+        "icon": "$(book)"
+      },
+      {
+        "command": "workflow.tools.claude.commitSession",
+        "title": "Claude: Categorise & Commit"
+      },
+      {
+        "command": "workflow.tools.claude.interactiveSession",
+        "title": "Claude: Interactive Session"
+      },
+      {
+        "command": "workflow.tools.claude.yoloSession",
+        "title": "Claude: YOLO Mode"
+      },
+      {
+        "command": "workflow.clier.refresh",
+        "title": "Refresh Pipeline",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "workflow.clier.daemon.start",
+        "title": "Start Daemon",
+        "icon": "$(play)"
+      },
+      {
+        "command": "workflow.clier.daemon.stop",
+        "title": "Stop Daemon",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "workflow.clier.daemon.restart",
+        "title": "Restart Daemon",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "workflow.clier.daemon.logs",
+        "title": "View Daemon Logs",
+        "icon": "$(output)"
+      },
+      {
+        "command": "workflow.clier.process.start",
+        "title": "Start Process",
+        "icon": "$(play)"
+      },
+      {
+        "command": "workflow.clier.process.stop",
+        "title": "Stop Process",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "workflow.clier.process.restart",
+        "title": "Restart Process",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "workflow.clier.process.kill",
+        "title": "Force Kill Process",
+        "icon": "$(close)"
+      },
+      {
+        "command": "workflow.clier.process.logs",
+        "title": "View Logs",
+        "icon": "$(output)"
+      },
+      {
+        "command": "workflow.clier.daemon.logs.200",
+        "title": "Last 200 lines"
+      },
+      {
+        "command": "workflow.clier.daemon.logs.500",
+        "title": "Last 500 lines"
+      },
+      {
+        "command": "workflow.clier.daemon.logs.all",
+        "title": "All logs"
+      },
+      {
+        "command": "workflow.clier.daemon.logs.5m",
+        "title": "Last 5 minutes"
+      },
+      {
+        "command": "workflow.clier.daemon.logs.30m",
+        "title": "Last 30 minutes"
+      },
+      {
+        "command": "workflow.clier.daemon.logs.1h",
+        "title": "Last 1 hour"
+      },
+      {
+        "command": "workflow.clier.process.logs.200",
+        "title": "Last 200 lines"
+      },
+      {
+        "command": "workflow.clier.process.logs.500",
+        "title": "Last 500 lines"
+      },
+      {
+        "command": "workflow.clier.process.logs.all",
+        "title": "All logs"
+      },
+      {
+        "command": "workflow.clier.process.logs.5m",
+        "title": "Last 5 minutes"
+      },
+      {
+        "command": "workflow.clier.process.logs.30m",
+        "title": "Last 30 minutes"
+      },
+      {
+        "command": "workflow.clier.process.logs.1h",
+        "title": "Last 1 hour"
+      },
+      {
+        "command": "workflow.clier.daemon.logs.clear",
+        "title": "Clear Logs",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "workflow.clier.process.logs.clear",
+        "title": "Clear Logs",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "workflow.clier.process.send",
+        "title": "Send Input",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "workflow.worktrees.hide",
+        "title": "Hide Worktree",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "workflow.worktrees.unhide",
+        "title": "Show Worktree",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "workflow.worktrees.toggleHidden",
+        "title": "Show Hidden Worktrees",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "workflow.worktrees.toggleHiddenOff",
+        "title": "Hide Hidden Worktrees",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "workflow.clier.process.hide",
+        "title": "Hide Process",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "workflow.clier.process.unhide",
+        "title": "Show Process",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "workflow.clier.toggleHidden",
+        "title": "Show Hidden Processes",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "workflow.clier.toggleHiddenOff",
+        "title": "Hide Hidden Processes",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "workflow.worktrees.show",
+        "title": "Workflow: Show Worktrees View"
+      },
+      {
+        "command": "workflow.clier.show",
+        "title": "Workflow: Show Pipeline View"
+      },
+      {
+        "command": "workflow.openInstallTerminal",
+        "title": "Install Tool"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "workflow.worktrees.refresh",
+          "when": "view == workflowWorktrees",
+          "group": "navigation@2"
+        },
+        {
+          "command": "workflow.worktrees.create",
+          "when": "view == workflowWorktrees",
+          "group": "navigation@1"
+        },
+        {
+          "command": "workflow.worktrees.toggleHidden",
+          "when": "view == workflowWorktrees && !workflowShowHiddenWorktrees",
+          "group": "navigation@3"
+        },
+        {
+          "command": "workflow.worktrees.toggleHiddenOff",
+          "when": "view == workflowWorktrees && workflowShowHiddenWorktrees",
+          "group": "navigation@3"
+        },
+        {
+          "command": "workflow.clier.toggleHidden",
+          "when": "view == workflowClier && !workflowShowHiddenProcesses",
+          "group": "navigation@2"
+        },
+        {
+          "command": "workflow.clier.toggleHiddenOff",
+          "when": "view == workflowClier && workflowShowHiddenProcesses",
+          "group": "navigation@2"
+        },
+        {
+          "command": "workflow.clier.refresh",
+          "when": "view == workflowClier",
+          "group": "navigation@1"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "workflow.worktrees.gwtSession",
+          "when": "view == workflowWorktrees && viewItem == gwt-header",
+          "group": "inline@1"
+        },
+        {
+          "command": "workflow.worktrees.gwtSessionInteractive",
+          "when": "view == workflowWorktrees && viewItem == gwt-header",
+          "group": "inline@2"
+        },
+        {
+          "command": "workflow.worktrees.gwtSplit",
+          "when": "view == workflowWorktrees && viewItem == gwt-header",
+          "group": "inline@3"
+        },
+        {
+          "command": "workflow.worktrees.docs",
+          "when": "view == workflowWorktrees && viewItem == gwt-header",
+          "group": "inline@4"
+        },
+        {
+          "command": "workflow.worktrees.gwtSplitFromEditor",
+          "when": "view == workflowWorktrees && viewItem == gwt-header",
+          "group": "gwt-actions@1"
+        },
+        {
+          "command": "workflow.worktrees.mergeSelected",
+          "when": "view == workflowWorktrees && viewItem == gwt-header",
+          "group": "gwt-batch@1"
+        },
+        {
+          "command": "workflow.worktrees.deleteSelected",
+          "when": "view == workflowWorktrees && viewItem == gwt-header",
+          "group": "gwt-batch@2"
+        },
+        {
+          "command": "workflow.worktrees.merge",
+          "when": "view == workflowWorktrees && viewItem == worktree",
+          "group": "inline@1"
+        },
+        {
+          "command": "workflow.worktrees.rescue",
+          "when": "view == workflowWorktrees && viewItem == worktree",
+          "group": "inline@2"
+        },
+        {
+          "command": "workflow.worktrees.openWindow",
+          "when": "view == workflowWorktrees && viewItem =~ /^worktree/",
+          "group": "inline@3"
+        },
+        {
+          "command": "workflow.worktrees.claudeSession",
+          "when": "view == workflowWorktrees && viewItem =~ /^worktree/",
+          "group": "inline@4"
+        },
+        {
+          "command": "workflow.worktrees.diff",
+          "when": "view == workflowWorktrees && viewItem == worktree",
+          "group": "inline@5"
+        },
+        {
+          "command": "workflow.worktrees.delete",
+          "when": "view == workflowWorktrees && viewItem == worktree",
+          "group": "inline@6"
+        },
+        {
+          "command": "workflow.worktrees.hide",
+          "when": "view == workflowWorktrees && viewItem == worktree",
+          "group": "visibility@1"
+        },
+        {
+          "command": "workflow.worktrees.unhide",
+          "when": "view == workflowWorktrees && viewItem == worktreeHidden",
+          "group": "visibility@1"
+        },
+        {
+          "command": "workflow.clier.process.hide",
+          "when": "view == workflowClier && viewItem =~ /^process-/",
+          "group": "visibility@1"
+        },
+        {
+          "command": "workflow.clier.process.unhide",
+          "when": "view == workflowClier && viewItem =~ /^hiddenProcess-/",
+          "group": "visibility@1"
+        },
+        {
+          "command": "workflow.clier.daemon.start",
+          "when": "view == workflowClier && viewItem == daemon-stopped",
+          "group": "inline@1"
+        },
+        {
+          "command": "workflow.clier.daemon.stop",
+          "when": "view == workflowClier && viewItem == daemon-running",
+          "group": "inline@1"
+        },
+        {
+          "command": "workflow.clier.daemon.restart",
+          "when": "view == workflowClier && viewItem == daemon-running",
+          "group": "inline@2"
+        },
+        {
+          "command": "workflow.clier.daemon.logs",
+          "when": "view == workflowClier && viewItem == daemon-running",
+          "group": "inline@3"
+        },
+        {
+          "submenu": "workflow.clier.daemon.logs.submenu",
+          "when": "view == workflowClier && viewItem == daemon-running",
+          "group": "logs"
+        },
+        {
+          "command": "workflow.clier.process.start",
+          "when": "view == workflowClier && viewItem =~ /^process-(stopped|crashed)(-input)?$/",
+          "group": "inline@1"
+        },
+        {
+          "command": "workflow.clier.process.stop",
+          "when": "view == workflowClier && viewItem =~ /^process-(running|restarting)(-input)?$/",
+          "group": "inline@1"
+        },
+        {
+          "command": "workflow.clier.process.restart",
+          "when": "view == workflowClier && viewItem =~ /^process-(running|restarting)(-input)?$/",
+          "group": "inline@2"
+        },
+        {
+          "command": "workflow.clier.process.logs",
+          "when": "view == workflowClier && viewItem =~ /^process-/",
+          "group": "inline@3"
+        },
+        {
+          "submenu": "workflow.clier.process.logs.submenu",
+          "when": "view == workflowClier && viewItem =~ /^process-/",
+          "group": "logs"
+        },
+        {
+          "command": "workflow.clier.process.send",
+          "when": "view == workflowClier && viewItem =~ /^process-(running|restarting)-input$/",
+          "group": "input"
+        },
+        {
+          "command": "workflow.clier.process.kill",
+          "when": "view == workflowClier && viewItem =~ /^process-(running|restarting)$/",
+          "group": "context@1"
+        }
+      ],
+      "workflow.clier.daemon.logs.submenu": [
+        {
+          "command": "workflow.clier.daemon.logs.200",
+          "group": "lines@1"
+        },
+        {
+          "command": "workflow.clier.daemon.logs.500",
+          "group": "lines@2"
+        },
+        {
+          "command": "workflow.clier.daemon.logs.all",
+          "group": "lines@3"
+        },
+        {
+          "command": "workflow.clier.daemon.logs.5m",
+          "group": "time@1"
+        },
+        {
+          "command": "workflow.clier.daemon.logs.30m",
+          "group": "time@2"
+        },
+        {
+          "command": "workflow.clier.daemon.logs.1h",
+          "group": "time@3"
+        },
+        {
+          "command": "workflow.clier.daemon.logs.clear",
+          "group": "clear"
+        }
+      ],
+      "workflow.clier.process.logs.submenu": [
+        {
+          "command": "workflow.clier.process.logs.200",
+          "group": "lines@1"
+        },
+        {
+          "command": "workflow.clier.process.logs.500",
+          "group": "lines@2"
+        },
+        {
+          "command": "workflow.clier.process.logs.all",
+          "group": "lines@3"
+        },
+        {
+          "command": "workflow.clier.process.logs.5m",
+          "group": "time@1"
+        },
+        {
+          "command": "workflow.clier.process.logs.30m",
+          "group": "time@2"
+        },
+        {
+          "command": "workflow.clier.process.logs.1h",
+          "group": "time@3"
+        },
+        {
+          "command": "workflow.clier.process.logs.clear",
+          "group": "clear"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  }
+}
