@@ -1,9 +1,14 @@
 {
-  "name": "vs-workflow-extension",
-  "displayName": "Workflow",
-  "description": "Worktree and Clier pipeline management sidebar",
+  "name": "ai-btt-toolkit-vscode",
+  "displayName": "AI BTTs",
+  "description": "Toolbox of Tiny AI Tools",
   "version": "0.1.0",
-  "publisher": "workflow",
+  "publisher": "SomersStack",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SomersStack/ai-btt-toolkit-vscode"
+  },
+  "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
   },
