@@ -7,6 +7,8 @@ import { ClierProvider } from './clier/clierProvider';
 import { registerClierCommands } from './clier/clierCommands';
 import { ToolsProvider } from './tools/toolsProvider';
 import { registerToolsCommands } from './tools/toolsCommands';
+import { GetStartedProvider } from './getStarted/getStartedProvider';
+import { registerGetStartedCommands } from './getStarted/getStartedCommands';
 
 const GWT_TERMINAL_PREFIXES = ['gwt', 'GWT', 'Claude:'];
 
@@ -32,6 +34,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // Initialize context keys for hidden toggle state
   vscode.commands.executeCommand('setContext', 'workflowShowHiddenWorktrees', context.workspaceState.get<boolean>('workflow.showHiddenWorktrees', false));
   vscode.commands.executeCommand('setContext', 'workflowShowHiddenProcesses', context.workspaceState.get<boolean>('workflow.showHiddenProcesses', false));
+
+  // Initialize Get Started context keys
+  vscode.commands.executeCommand('setContext', 'workflowWorktreesHasContent', false);
+  vscode.commands.executeCommand('setContext', 'workflowClierHasContent', false);
+  const forceShowGetStarted = context.workspaceState.get<boolean>('workflow.forceShowGetStarted', false);
+  vscode.commands.executeCommand('setContext', 'workflowForceShowGetStarted', forceShowGetStarted);
 
   // Always register both providers so the views have data providers.
   // They return empty arrays when their tool isn't available.
@@ -61,6 +69,16 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(toolsView);
   registerToolsCommands(context);
 
+  const getStartedProvider = new GetStartedProvider();
+  getStartedProvider.gwtInstalled = gwtInstalled;
+  getStartedProvider.clierInstalled = clierInstalled;
+  const getStartedView = vscode.window.createTreeView('workflowGetStarted', {
+    treeDataProvider: getStartedProvider,
+    showCollapseAll: false,
+  });
+  context.subscriptions.push(getStartedView);
+  registerGetStartedCommands(context, getStartedProvider);
+
   // "Show Worktrees" command — force-show the view even if gwt is not installed
   context.subscriptions.push(
     vscode.commands.registerCommand('workflow.worktrees.show', async () => {
@@ -88,7 +106,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   // Auto-refresh worktree view and show notifications when GWT terminals close
   context.subscriptions.push(
-    vscode.window.onDidCloseTerminal((terminal) => {
+    vscode.window.onDidCloseTerminal(async (terminal) => {
       const name = terminal.name;
       const isGwtTerminal = GWT_TERMINAL_PREFIXES.some((prefix) => name.startsWith(prefix));
 
@@ -108,6 +126,20 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         } else if (name.startsWith('Claude:')) {
           vscode.window.showInformationMessage(`Claude session closed: ${name}`);
         }
+      }
+
+      // Re-check tool installation after Install terminals close
+      if (name.startsWith('Install ')) {
+        const [newGwt, newClier] = await Promise.all([
+          isCommandInstalled('gwt'),
+          isCommandInstalled('clier'),
+        ]);
+        vscode.commands.executeCommand('setContext', 'workflowGwtInstalled', newGwt);
+        vscode.commands.executeCommand('setContext', 'workflowClierInstalled', newClier);
+        worktreeProvider.gwtInstalled = newGwt;
+        clierProvider.clierInstalled = newClier;
+        getStartedProvider.gwtInstalled = newGwt;
+        getStartedProvider.clierInstalled = newClier;
       }
     })
   );

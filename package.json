@@ -2,7 +2,7 @@
   "name": "ai-btt-toolkit-vscode",
   "displayName": "AI BTTs",
   "description": "Toolbox of Tiny AI Tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "SomersStack",
   "repository": {
     "type": "git",
@@ -41,6 +41,11 @@
     },
     "views": {
       "workflow": [
+        {
+          "id": "workflowGetStarted",
+          "name": "Get Started",
+          "when": "(!workflowWorktreesHasContent && !workflowClierHasContent) || workflowForceShowGetStarted"
+        },
         {
           "id": "workflowWorktrees",
           "name": "Worktrees",
@@ -309,10 +314,44 @@
       {
         "command": "workflow.openInstallTerminal",
         "title": "Install Tool"
+      },
+      {
+        "command": "workflow.getStarted.gwtReadme",
+        "title": "GWT Guide",
+        "icon": "$(book)"
+      },
+      {
+        "command": "workflow.getStarted.clierReadme",
+        "title": "Clier Guide",
+        "icon": "$(book)"
+      },
+      {
+        "command": "workflow.getStarted.show",
+        "title": "Workflow: Show Get Started"
+      },
+      {
+        "command": "workflow.getStarted.hide",
+        "title": "Hide Get Started",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "workflow.getStarted.refresh",
+        "title": "Refresh Get Started",
+        "icon": "$(refresh)"
       }
     ],
     "menus": {
       "view/title": [
+        {
+          "command": "workflow.getStarted.hide",
+          "when": "view == workflowGetStarted && workflowForceShowGetStarted",
+          "group": "navigation@1"
+        },
+        {
+          "command": "workflow.getStarted.refresh",
+          "when": "view == workflowGetStarted",
+          "group": "navigation@2"
+        },
         {
           "command": "workflow.worktrees.refresh",
           "when": "view == workflowWorktrees",
@@ -334,6 +373,16 @@
           "group": "navigation@3"
         },
         {
+          "command": "workflow.getStarted.gwtReadme",
+          "when": "view == workflowWorktrees",
+          "group": "navigation@4"
+        },
+        {
+          "command": "workflow.getStarted.show",
+          "when": "view == workflowWorktrees",
+          "group": "overflow"
+        },
+        {
           "command": "workflow.clier.toggleHidden",
           "when": "view == workflowClier && !workflowShowHiddenProcesses",
           "group": "navigation@2"
@@ -347,6 +396,16 @@
           "command": "workflow.clier.refresh",
           "when": "view == workflowClier",
           "group": "navigation@1"
+        },
+        {
+          "command": "workflow.getStarted.clierReadme",
+          "when": "view == workflowClier",
+          "group": "navigation@3"
+        },
+        {
+          "command": "workflow.getStarted.show",
+          "when": "view == workflowClier",
+          "group": "overflow"
         }
       ],
       "view/item/context": [

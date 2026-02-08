@@ -98,6 +98,7 @@ export class WorktreeProvider implements vscode.TreeDataProvider<WorktreeTreeIte
 
   async getChildren(): Promise<WorktreeTreeItem[]> {
     if (!this._gwtInstalled) {
+      vscode.commands.executeCommand('setContext', 'workflowWorktreesHasContent', false);
       return [new InstallItem('GWT', 'npm install -g ai-git-worktrees')];
     }
     // If we already have cached items, return them immediately (no spinner).
@@ -115,6 +116,7 @@ export class WorktreeProvider implements vscode.TreeDataProvider<WorktreeTreeIte
   private async fetchItems(): Promise<WorktreeTreeItem[]> {
     const folder = getWorkspaceFolder();
     if (!folder) {
+      vscode.commands.executeCommand('setContext', 'workflowWorktreesHasContent', false);
       return [];
     }
 
@@ -123,6 +125,7 @@ export class WorktreeProvider implements vscode.TreeDataProvider<WorktreeTreeIte
     try {
       const result = await execCommand('git', ['worktree', 'list', '--porcelain'], folder);
       if (result.exitCode !== 0) {
+        vscode.commands.executeCommand('setContext', 'workflowWorktreesHasContent', false);
         return [new GwtHeaderItem(this.gwtVersion)];
       }
 
@@ -159,8 +162,13 @@ export class WorktreeProvider implements vscode.TreeDataProvider<WorktreeTreeIte
         if (isHidden && !showHidden) continue;
         items.push(new WorktreeItem(wt, isHidden));
       }
+
+      const hasNonMainWorktrees = items.some((item) => item instanceof WorktreeItem && !item.worktree.isMain);
+      vscode.commands.executeCommand('setContext', 'workflowWorktreesHasContent', hasNonMainWorktrees);
+
       return items;
     } catch {
+      vscode.commands.executeCommand('setContext', 'workflowWorktreesHasContent', false);
       return [new GwtHeaderItem(this.gwtVersion)];
     }
   }

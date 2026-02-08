@@ -71,16 +71,21 @@ export class ClierProvider implements vscode.TreeDataProvider<ClierTreeItem> {
 
   async getChildren(element?: ClierTreeItem): Promise<ClierTreeItem[]> {
     if (!this._clierInstalled) {
+      vscode.commands.executeCommand('setContext', 'workflowClierHasContent', false);
       return [new InstallItem('Clier', 'npm install -g clier-ai')];
     }
 
     const folder = getWorkspaceFolder();
     if (!folder) {
+      vscode.commands.executeCommand('setContext', 'workflowClierHasContent', false);
       return [];
     }
 
     // Load pipeline config on each refresh to pick up changes
     this.loadConfig(folder);
+
+    const hasContent = this.pipelineConfig.stages.length > 0 || this.pipelineConfig.processes.length > 0;
+    vscode.commands.executeCommand('setContext', 'workflowClierHasContent', hasContent);
 
     // If element is a stage, return its processes
     if (element instanceof StageItem) {
